@@ -6,7 +6,7 @@ import http from "http";
 const app = express();
 app.use(cors());
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 
 const server = http.createServer(app);
 
@@ -27,14 +27,17 @@ io.on("connection", (socket) => {
   });
 });
 
-app.post("/test", (req, res) => {
+app.post("/test/:id", (req, res) => {
   console.log(" Requête Rn reçue");
-  io.emit("test");
+  const id = req.params.id
+  io.emit("test", {status:"ouvrir porte", id:id, donnee:req.body});
   res.send("ok");
 });
-app.post("/stop", (req, res) => {
+app.post("/stop/:id", (req, res) => {
+const id = req.params.id
+console.log(req.body)
   console.log(" Requête Rn reçue");
-  io.emit("stop");
+  io.emit("stop", {status:"ferme porte", id:id, donnee:req.body});
   res.send("ok");
 });
 
