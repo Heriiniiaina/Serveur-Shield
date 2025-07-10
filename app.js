@@ -32,6 +32,11 @@ app.post("/test", (req, res) => {
   io.emit("test");
   res.send("ok");
 });
+app.post("/stop", (req, res) => {
+  console.log(" Requête Rn reçue");
+  io.emit("stop");
+  res.send("ok");
+});
 
 
 const PORT = 8000;
