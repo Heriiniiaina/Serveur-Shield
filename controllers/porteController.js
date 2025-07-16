@@ -73,6 +73,18 @@ export const changePorteStatus = async(req, res) => {
               await p.save()
          })
     }
+    if (porte.cadreNom === "alarme") {
+        if (!porte.porteStatus) {
+           lockAllPortes(req, res)
+           porte.porteStatus = true
+           await porte.save()
+           return
+        }
+        else {
+            porte.porteStatus = false
+            await porte.save()
+        }
+    }
     else
     {
         porte.porteStatus = !porte.porteStatus
@@ -97,3 +109,4 @@ export const lockAllPortes = async(req, res) => {
         message: "All portes locked successfully",
     })
 }
+

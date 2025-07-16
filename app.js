@@ -38,6 +38,7 @@ io.on("connection", (socket) => {
 app.post("/ouvert/:id", (req, res) => {
   console.log(" Requête Rn reçue");
   const id = req.params.id
+  console.log(req.body);
   io.emit("test", {status:"ouvrir porte", id:id, donnee:req.body});
   res.send("ok");
 });
@@ -45,6 +46,7 @@ app.post("/fermer/:id", (req, res) => {
 const id = req.params.id
 console.log(req.body)
   console.log(" Requête Rn reçue");
+  console.log(req.body);
   io.emit("stop", {status:"ferme porte", id:id, donnee:req.body});
   res.send("ok");
 });
@@ -54,9 +56,29 @@ app.post("/send", async(req,res)=>{
   const porte = await PorteModel.find({})
   const ft = porte.filter((p) => p.cadreNom.includes(current.substring(5)));
   console.log(ft) ;
-  io.emit("send", {id:ft[0]._id,cadreNom:ft[0].cadreNom, vitreNom:ft[0].vitreNom, status:"send"});
+  io.emit("send", {id:ft[0]._id,cadreNom:ft[0].cadreNom, vitreNom:ft[0].vitreNom, status:"send", colisionNom:ft[0].colision});
   res.send("ok");
 })
+
+
+app.post("/lock", async(req, res) => {
+  const portes = await PorteModel.find({});
+  if (portes.length === 0) {
+    return res.status(404).json({
+      status: "error",
+      message: "No portes found",
+    });
+  }
+  for (const porte of portes) {
+    porte.porteStatus = false;
+    await porte.save();
+  }
+  io.emit("lockAllPortes", { status: "lockAllPortes" });
+  res.status(200).json({
+    status: "success",
+    message: "All portes locked successfully",
+  });
+});
 // createPorte("alarme", "alarme")
 // createPorte("OpenAluPorteExt2", "OpenFerPorteExt2")
 // createPorte("OpenAluPorteExt3", "OpenFerPorteExt3")
@@ -65,6 +87,24 @@ app.post("/send", async(req,res)=>{
 // createPorte("OpenFerCadreFenetreExt1", "OpenVitreCadreFenetreExt1")
 // createPorte("OpenFerCadreFenetreExt2", "OpenVitreCadreFenetreExt2")
 // createPorte("OpenPorteExt2")
+
+const ajouteColision = async(collision, id) =>{
+  const porte = await PorteModel.findById(id);
+  if (!porte) {
+    console.error("Porte not found");
+    return;
+  }
+  porte.colision = collision;
+  await porte.save();
+  console.log("Colision added successfully");
+}
+
+// ajouteColision("OpenCollisionVavahadyKely", "6875fe7b782aa23b2e76a869");
+// ajouteColision("OpenCollisionVavahadyBe", "6875fe7b782aa23b2e76a868");
+// ajouteColision("OpenCollisionPorteExt4.001", "6877214479684e033565d894");
+// ajouteColision("OpenCollisionPortePpl3", "6877214479684e033565d890");
+// ajouteColision("OpenCollisionPortePpl4", "6877214479684e033565d891");
+
 const PORT = 8000;
 server.listen(PORT, () => {
   console.log(`Serveur: http://localhost:${PORT}`);

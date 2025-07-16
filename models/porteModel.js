@@ -6,6 +6,10 @@ const PorteSchema = mongoose.Schema({
         type:String,
         default:null
     },
+    colision:{
+        type:String,
+        default:null
+    },
     porteStatus:{
         type:Boolean,
         default:false
