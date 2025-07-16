@@ -5,6 +5,7 @@ import http from "http";
 import { connectDb } from "./config/db.js";
 import { createPorte } from "./controllers/porteController.js";
 import routes from "./routes/routes.js";
+import { PorteModel } from "./models/porteModel.js";
 const app = express();
 app.use(cors({
   origin:"*",
@@ -46,7 +47,15 @@ console.log(req.body)
   io.emit("stop", {status:"ferme porte", id:id, donnee:req.body});
   res.send("ok");
 });
-
+app.post("/send", async(req,res)=>{
+  const {current} = req.body;
+  
+  const porte = await PorteModel.find({})
+  const ft = porte.filter((p) => p.cadreNom.includes(current.substring(5)) && !p.cadreNom.includes("Alu"));
+  console.log(ft) ;
+  io.emit("send", {id:ft._id,cadreNom:ft.cadreNom, vitreNom:ft.vitreNom});
+  res.send("ok");
+})
 // createPorte("OpenAluPorteExt", "OpenFerPorteExt")
 // createPorte("OpenAluPorteExt2", "OpenFerPorteExt2")
 // createPorte("OpenAluPorteExt3", "OpenFerPorteExt3")
