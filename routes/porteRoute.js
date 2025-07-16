@@ -5,5 +5,5 @@ const router = express.Router();
 router.get("/getPorteStatus/:id", getPorteStatus)
 router.post("/changePorteStatus/:id", changePorteStatus);
 router.get("/getAllPortes", getAllPortes)
-router.post("/lockAllPorte", lockAllPortes);
+router.post("/lockAllPorte", lockAllPortes)
 export default router;
