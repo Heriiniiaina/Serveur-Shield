@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 const PorteSchema = mongoose.Schema({
     cadreNom:String,
-    vitreNom:String,
+    vitreNom:{
+        type:String,
+        default:null
+    },
     porteStatus:{
         type:Boolean,
         default:false

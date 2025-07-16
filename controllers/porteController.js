@@ -17,6 +17,26 @@ export const createPorte = async(cadreNom, vitreNom) => {
         }
     }
 }
+export const getAllPortes = async(req, res) => {
+    try {
+        const portes = await PorteModel.find({})
+        if (portes.length === 0) {
+            return res.status(404).json({
+                status: "error",
+                message: "No portes found",
+            })
+        }
+        res.status(200).json({
+            status: "success",
+            portes,
+        })
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: error.message,
+        })
+    }
+}
 
 export const getPorteStatus = async(req, res)=>{
     const id = req.params.id

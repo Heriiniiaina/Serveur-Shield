@@ -47,8 +47,14 @@ console.log(req.body)
   res.send("ok");
 });
 
-// createPorte("OpenCadreVavahadyBe", "OpenVyVavahadyBe")
-// createPorte("OpenCadreVavahadyKely", "OpenVyVavahadyKely")
+// createPorte("OpenAluPorteExt", "OpenFerPorteExt")
+// createPorte("OpenAluPorteExt2", "OpenFerPorteExt2")
+// createPorte("OpenAluPorteExt3", "OpenFerPorteExt3")
+// createPorte("OpenCadreVitrePortePpl3", "OpenVitrePortePpl3")
+// createPorte("OpenCadreVitrePortePpl4", "OpenVitrePortePpl4")
+// createPorte("OpenFerCadreFenetreExt1", "OpenVitreCadreFenetreExt1")
+// createPorte("OpenFerCadreFenetreExt2", "OpenVitreCadreFenetreExt2")
+// createPorte("OpenPorteExt2")
 const PORT = 8000;
 server.listen(PORT, () => {
   console.log(`Serveur: http://localhost:${PORT}`);
