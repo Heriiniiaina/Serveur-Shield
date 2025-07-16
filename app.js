@@ -6,6 +6,7 @@ import { connectDb } from "./config/db.js";
 import { createPorte } from "./controllers/porteController.js";
 import routes from "./routes/routes.js";
 import { PorteModel } from "./models/porteModel.js";
+import { stat } from "fs";
 const app = express();
 app.use(cors({
   origin:"*",
@@ -51,12 +52,12 @@ app.post("/send", async(req,res)=>{
   const {current} = req.body;
   
   const porte = await PorteModel.find({})
-  const ft = porte.filter((p) => p.cadreNom.includes(current.substring(5)) && !p.cadreNom.includes("Alu"));
+  const ft = porte.filter((p) => p.cadreNom.includes(current.substring(5)));
   console.log(ft) ;
-  io.emit("send", {id:ft._id,cadreNom:ft.cadreNom, vitreNom:ft.vitreNom});
+  io.emit("send", {id:ft[0]._id,cadreNom:ft[0].cadreNom, vitreNom:ft[0].vitreNom, status:"send"});
   res.send("ok");
 })
-// createPorte("OpenAluPorteExt", "OpenFerPorteExt")
+// createPorte("alarme", "alarme")
 // createPorte("OpenAluPorteExt2", "OpenFerPorteExt2")
 // createPorte("OpenAluPorteExt3", "OpenFerPorteExt3")
 // createPorte("OpenCadreVitrePortePpl3", "OpenVitrePortePpl3")

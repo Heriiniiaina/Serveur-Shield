@@ -58,6 +58,7 @@ export const getPorteStatus = async(req, res)=>{
 export const changePorteStatus = async(req, res) => {
     const id = req.params.id
     console.log("change porte status", id)
+    
     const porte = await PorteModel.findOne({_id:id})
     if (!porte) {
         return res.status(404).json({
@@ -65,11 +66,34 @@ export const changePorteStatus = async(req, res) => {
             message: "Porte not found",
         })
     }
-    porte.porteStatus = !porte.porteStatus
-    await porte.save()
+    if (porte.cadreNom === "all") {
+       const portes = await PorteModel.find({})
+         portes.forEach(async (p) => {
+              p.porteStatus = false
+              await p.save()
+         })
+    }
+    else
+    {
+        porte.porteStatus = !porte.porteStatus
+        await porte.save()
+    }
     console.log("ok niova")
     res.status(200).json({
         status: "success",
         porte,
+    })
+}
+
+export const lockAllPortes = async(req, res) => { 
+    const portes = await PorteModel.find({})
+
+    portes.forEach(async (porte) => {
+        porte.porteStatus = false
+        await porte.save()
+    })
+    res.status(200).json({
+        status: "success",
+        message: "All portes locked successfully",
     })
 }
