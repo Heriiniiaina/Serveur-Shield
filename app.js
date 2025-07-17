@@ -3,7 +3,7 @@ import cors from "cors";
 import { Server } from "socket.io";
 import http from "http";
 import { connectDb } from "./config/db.js";
-import { createPorte } from "./controllers/porteController.js";
+import { createPorte, lockAllPortes } from "./controllers/porteController.js";
 import routes from "./routes/routes.js";
 import { PorteModel } from "./models/porteModel.js";
 import { stat } from "fs";
@@ -35,10 +35,13 @@ io.on("connection", (socket) => {
   });
 });
 
-app.post("/ouvert/:id", (req, res) => {
+app.post("/ouvert/:id", async (req, res) => {
   console.log(" Requête Rn reçue");
   const id = req.params.id
   console.log(req.body);
+  const alarme = await PorteModel.findOne({ _id: "68780a2b1eacf19903991072" });
+  alarme.porteStatus = false;
+  await alarme.save();
   io.emit("test", {status:"ouvrir porte", id:id, donnee:req.body});
   res.send("ok");
 });
@@ -79,6 +82,23 @@ app.post("/lock", async(req, res) => {
     message: "All portes locked successfully",
   });
 });
+
+app.post("/alarme", async(req, res) => {
+  console.log("alao le alarme")
+  const alarme = await PorteModel.findOne({ _id: "68780a2b1eacf19903991072" });
+  if (alarme.porteStatus == false) {
+    alarme.porteStatus = true;
+    await alarme.save();
+    io.emit("lockAllPortes", { status: "lockAllPortes" });
+    console.log("Alarme activée");
+    //lockAllPortes(req, res);
+  }
+  else {
+    alarme.porteStatus = false;
+    ;
+  }
+  res.send("Alarme chqnger")
+})
 // createPorte("alarme", "alarme")
 // createPorte("OpenAluPorteExt2", "OpenFerPorteExt2")
 // createPorte("OpenAluPorteExt3", "OpenFerPorteExt3")
