@@ -66,17 +66,18 @@ app.post("/send", async(req,res)=>{
 
 app.post("/lock", async(req, res) => {
   const portes = await PorteModel.find({});
+  console.log("ok pr")
   if (portes.length === 0) {
     return res.status(404).json({
       status: "error",
       message: "No portes found",
     });
   }
-  for (const porte of portes) {
-    porte.porteStatus = false;
-    await porte.save();
-  }
   io.emit("lockAllPortes", { status: "lockAllPortes" });
+  
+  console.log("ok pr 1")
+
+  console.log("ok pr 2")
   res.status(200).json({
     status: "success",
     message: "All portes locked successfully",
